@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Morris';src:url('fonts/morris.ttf') format('truetype');font-display:swap;}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#05053a;font-family:'Morris','Courier New',monospace;-webkit-font-smoothing:none;font-smoothing:none;image-rendering:pixelated;overflow-x:hidden;}
+a{color:#f2e14a;text-decoration:none;}
+a:hover{color:#fff;background:#f2e14a33;}
+::selection{background:#35e0e0;color:#0a0a8c;}
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+@keyframes scan{0%{transform:translateY(0);}100%{transform:translateY(6px);}}
+@keyframes flick{0%,100%{opacity:.97;}50%{opacity:1;}}
+@keyframes tick{0%{transform:translateY(0);}100%{transform:translateY(-100%);}}
+input,textarea{font-family:'Morris','Courier New',monospace;}
+::-webkit-input-placeholder{color:#6a6fd0;}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="position:relative;min-height:100vh;background:#0a0a8c;color:#eef0ff;font-size:17px;line-height:1.55;padding-bottom:64px;">
+
+  <div style="position:fixed;inset:0;z-index:0;pointer-events:none;background:#0a0a8c;">
+    <div ref="{{ hueRef }}" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,140,0) 0%,rgba(10,10,140,.9) 100%);"></div>
+    <div ref="{{ starsRef }}" style="position:absolute;left:0;right:0;top:-20%;height:220%;background-image:radial-gradient(1px 1px at 20% 30%,#8f95ff 40%,transparent 41%),radial-gradient(1px 1px at 70% 60%,#5c62d0 40%,transparent 41%),radial-gradient(2px 2px at 45% 80%,#35e0e0 40%,transparent 41%),radial-gradient(1px 1px at 85% 20%,#f2e14a 40%,transparent 41%),radial-gradient(1px 1px at 12% 75%,#f45cf4 40%,transparent 41%);background-size:280px 280px,340px 340px,420px 420px,300px 300px,380px 380px;opacity:.5;"></div>
+  </div>
+
+  <sc-if value="{{ showScanlines }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed;inset:0;z-index:60;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(0,0,0,.22) 0px,rgba(0,0,0,.22) 1px,transparent 2px,transparent 3px);mix-blend-mode:multiply;animation:scan .9s steps(2) infinite;"></div>
+  </sc-if>
+  <div style="position:fixed;inset:0;z-index:61;pointer-events:none;box-shadow:inset 0 0 180px 40px rgba(0,0,10,.55);"></div>
+
+  <!-- ============ TOP NAV ============ -->
+  <div style="position:sticky;top:0;z-index:40;background:#05055a;border-bottom:2px solid #35e0e0;box-shadow:0 2px 0 #0a0a8c,0 4px 12px rgba(0,0,0,.5);">
+    <div style="max-width:940px;margin:0 auto;display:flex;align-items:stretch;gap:0;flex-wrap:wrap;">
+      <button onClick="{{ goMain }}" style="cursor:pointer;border:none;background:#35e0e0;color:#05055a;font-family:inherit;font-size:19px;padding:6px 16px;font-weight:bold;letter-spacing:1px;">부체오<span style="font-size:13px;opacity:.8;">넷</span></button>
+      <div style="display:flex;gap:0;flex:1;min-width:0;">
+        <button onClick="{{ goMain }}" style="cursor:pointer;flex:1;border:none;border-right:1px solid #2a2ab0;background:transparent;color:#eef0ff;font-family:inherit;font-size:16px;padding:6px 4px;">◈ 메인</button>
+        <button onClick="{{ goClass }}" style="cursor:pointer;flex:1;border:none;border-right:1px solid #2a2ab0;background:transparent;color:#35e05a;font-family:inherit;font-size:16px;padding:6px 4px;">① 클래스</button>
+        <button onClick="{{ goBuy }}" style="cursor:pointer;flex:1;border:none;border-right:1px solid #2a2ab0;background:transparent;color:#f45cf4;font-family:inherit;font-size:16px;padding:6px 4px;">② 강의안</button>
+        <button onClick="{{ goData }}" style="cursor:pointer;flex:1;border:none;background:transparent;color:#f2e14a;font-family:inherit;font-size:16px;padding:6px 4px;">③ 자료실</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:940px;margin:0 auto;padding:0 18px;position:relative;z-index:10;">
+
+  <!-- ==================== PAGE 1 : MAIN ==================== -->
+  <sc-if value="{{ isMain }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="메인">
+
+    <!-- HERO -->
+    <section style="padding:38px 0 30px;">
+      <sc-if value="{{ bootIntro }}" hint-placeholder-val="{{ true }}">
+      <pre style="margin:0 0 22px;color:#7e84e6;font-size:14px;line-height:1.5;white-space:pre-wrap;">서울 지역 고속노드 접속 :: 749-2100 (모뎀속도 V32이상 접속가능)
+CONNECT 33600 / NO CARRIER 방지 프로토콜 OK
+'BEUCHEO' 서비스에 접속합니다 . . . . . . . . . [ 완료 ]
+로그인 ID : <span style="color:#35e0e0;">beucheo</span>  /  최근 접속 : 26년 07월 16일</pre>
+      </sc-if>
+
+      <div style="border:2px solid #35e0e0;background:#080860;padding:22px 22px 26px;box-shadow:6px 6px 0 #05053a;">
+        <div style="color:#35e0e0;font-size:15px;letter-spacing:3px;">╔═══ WELCOME ═══════════════════════╗</div>
+        <h1 style="margin:14px 0 6px;font-size:64px;line-height:1;color:#fff;letter-spacing:2px;text-shadow:3px 3px 0 #f45cf4,6px 6px 0 #05055a;">부체오</h1>
+        <div style="font-size:20px;color:#cdd2ff;">AI로 <b style="color:#f2e14a;">만들고 · 키우고 · 자동화</b>하는 사람<span style="animation:blink 1s steps(1) infinite;color:#f2e14a;">_</span></div>
+        <div style="margin-top:8px;color:#8a90d8;font-size:16px;">AI 활용법 크리에이터 · 강사 · @beucheo.ai</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px;">
+          <div style="border:1px solid #2a2ab0;padding:12px 14px;background:#12128f;">
+            <div style="color:#35e0e0;font-size:14px;">▶ 포지션</div>
+            <div style="font-size:26px;color:#fff;line-height:1.15;margin-top:4px;">AI 네이티브<br>전문가</div>
+          </div>
+          <div style="border:1px solid #2a2ab0;padding:12px 14px;background:#12128f;">
+            <div style="color:#35e0e0;font-size:14px;">▶ 인스타 팔로워</div>
+            <div style="font-size:40px;color:#f2e14a;line-height:1.1;">2.8<span style="font-size:20px;color:#fff;">만</span></div>
+          </div>
+        </div>
+        <div style="margin-top:16px;color:#6a6fb8;font-size:14px;">↓ 스크롤하여 접속을 계속합니다 ▼▼▼</div>
+      </div>
+    </section>
+
+    <!-- 소개 -->
+    <section data-reveal style="padding:26px 0;">
+      <div style="color:#35e0e0;font-size:22px;border-bottom:1px dashed #35e0e0;padding-bottom:6px;margin-bottom:16px;">▣ 누구세요? &nbsp;<span style="color:#6a6fb8;font-size:15px;">/ WHO AM I</span></div>
+      <div style="border-left:4px solid #35e0e0;padding:4px 0 4px 18px;font-size:19px;line-height:1.75;color:#cdd2ff;">
+        저는 <b style="color:#fff;">AI를 활용해서 콘텐츠를 만드는</b> 부체오예요.<br>
+        AI 활용법 계정 <b style="color:#f2e14a;">@beucheo.ai</b>를 직접 기획·운영해 <b style="color:#fff;">팔로워 2.8만</b>을 모았고,<br>
+        전자책 출시, 카드뉴스 <b style="color:#fff;">자동화 프로그램</b>까지 직접 만들었어요.
+      </div>
+      <div style="margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <div style="border:1px solid #2a2ab0;background:#0d0d78;padding:12px;"><div style="color:#f2e14a;">◆ 만든다</div><div style="color:#9aa0e0;font-size:15px;margin-top:4px;">제미나이·클로드로<br>콘텐츠 제작 및 프로그램 개발<br>(바이브코딩)</div></div>
+        <div style="border:1px solid #2a2ab0;background:#0d0d78;padding:12px;"><div style="color:#f2e14a;">◆ 키운다</div><div style="color:#9aa0e0;font-size:15px;margin-top:4px;">AI를 활용한 분석 시스템으로<br>반응을 읽고 콘텐츠를 개선해<br>계정을 성장</div></div>
+        <div style="border:1px solid #2a2ab0;background:#0d0d78;padding:12px;"><div style="color:#f2e14a;">◆ 자동화한다</div><div style="color:#9aa0e0;font-size:15px;margin-top:4px;">카드뉴스 자동화 제작 및<br>워크플로우 제작으로<br>반복 업무를 자동화</div></div>
+      </div>
+    </section>
+
+    <!-- 성과 -->
+    <section data-reveal style="padding:26px 0;">
+      <div style="color:#35e0e0;font-size:22px;border-bottom:1px dashed #35e0e0;padding-bottom:6px;margin-bottom:16px;">▣ 검증된 성과 &nbsp;<span style="color:#6a6fb8;font-size:15px;">/ TRACK RECORD</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+        <div style="border:1px solid #2a2ab0;background:#12128f;padding:16px;text-align:center;box-shadow:4px 4px 0 #05053a;"><div style="font-size:38px;color:#fff;">전자책</div><div style="color:#8a90d8;font-size:15px;">'카드뉴스 완전정복' 출시</div></div>
+        <div style="border:1px solid #2a2ab0;background:#12128f;padding:16px;text-align:center;box-shadow:4px 4px 0 #05053a;"><div style="font-size:38px;color:#f2e14a;">2.8만</div><div style="color:#8a90d8;font-size:15px;">인스타 팔로워</div></div>
+        <div style="border:1px solid #2a2ab0;background:#12128f;padding:16px;text-align:center;box-shadow:4px 4px 0 #05053a;"><div style="font-size:38px;color:#fff;display:flex;align-items:center;justify-content:center;height:44px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:38px;height:38px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div><div style="color:#8a90d8;font-size:15px;">AI 영상 공모전 수상</div></div>
+      </div>
+    </section>
+
+    <!-- 이력 게시판 -->
+    <section data-reveal style="padding:26px 0;">
+      <div style="color:#35e0e0;font-size:22px;border-bottom:1px dashed #35e0e0;padding-bottom:6px;margin-bottom:14px;">▣ 경험 게시판 &nbsp;<span style="color:#6a6fb8;font-size:15px;">/ CAREER BOARD</span></div>
+      <div style="border:1px solid #35e0e0;background:#080860;">
+        <div style="display:grid;grid-template-columns:56px 1fr 150px;gap:0;background:#35e0e0;color:#05055a;font-size:15px;padding:5px 12px;">
+          <span>번호</span><span>제목</span><span style="text-align:right;">태그</span>
+        </div>
+        <div style="font-size:16px;">
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:7px 12px;border-bottom:1px solid #1a1a9a;"><span style="color:#7e84e6;">0008</span><span style="color:#fff;">부체오(@beucheo.ai) AI 활용법 계정 운영</span><span style="text-align:right;color:#8a90d8;">팔로워 2.8만</span></div>
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:7px 12px;border-bottom:1px solid #1a1a9a;"><span style="color:#6a6fb8;">0007</span><span>전자책 '카드뉴스 완전정복' 기획·출시</span><span style="text-align:right;color:#8a90d8;">상품기획</span></div>
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:7px 12px;border-bottom:1px solid #1a1a9a;"><span style="color:#6a6fb8;">0006</span><span>카드뉴스 자동화 프로그램 개발</span><span style="text-align:right;color:#8a90d8;">바이브코딩</span></div>
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:7px 12px;border-bottom:1px solid #1a1a9a;"><span style="color:#6a6fb8;">0005</span><span>AI ASMR 릴스 @slindle.official 운영</span><span style="text-align:right;color:#8a90d8;">릴스</span></div>
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:7px 12px;border-bottom:1px solid #1a1a9a;"><span style="color:#6a6fb8;">0004</span><span>AI 커플 공감 릴스 @myfuture_reels 운영</span><span style="text-align:right;color:#8a90d8;">최다 201만</span></div>
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:7px 12px;border-bottom:1px solid #1a1a9a;"><span style="color:#6a6fb8;">0003</span><span>면사랑 CM송 AI부문 수상</span><span style="text-align:right;color:#f2e14a;display:flex;align-items:center;justify-content:flex-end;gap:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>수상</span></div>
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:9px 12px;border-bottom:1px solid #1a1a9a;align-items:start;"><span style="color:#6a6fb8;">0002</span><span style="line-height:1.6;">AI 네이티브 전문가 과정 및 캡스톤 이수<br><span style="color:#7e84e6;font-size:14px;">· Few-shot · CoT · ToT 기법 및 XML/JSON 구조화 프롬프트 엔지니어링 설계<br>· Python 및 네이버 · YouTube API 기반 소셜 데이터 자동 수집 파이프라인 구축<br>· LLM 기반 텍스트 마이닝과 감성 분석 에이전트 설계 기반의 학술논문 작성</span></span><span style="text-align:right;color:#35e0e0;line-height:1.4;">2025.03<br>~2025.12</span></div>
+          <div style="display:grid;grid-template-columns:56px 1fr 150px;padding:7px 12px;"><span style="color:#6a6fb8;">0001</span><span>포스트 프로덕션 에디터 (2025.07 ~ 2026.01)</span><span style="text-align:right;color:#8a90d8;">편집·CG</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 메뉴 / CTA -->
+    <section data-reveal style="padding:26px 0 44px;">
+      <div style="color:#35e0e0;font-size:22px;border-bottom:1px dashed #35e0e0;padding-bottom:6px;margin-bottom:16px;">▣ 무엇을 도와드릴까요? &nbsp;<span style="color:#6a6fb8;font-size:15px;">/ MENU</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+        <div style="border:2px solid #35e05a;background:#080860;display:flex;flex-direction:column;">
+          <div style="background:#35e05a;color:#05055a;padding:6px 12px;font-size:18px;">① CLASS 신청</div>
+          <div style="padding:14px;flex:1;color:#cdd2ff;font-size:15px;">AI 활용법 <b style="color:#fff;">1:1 과외</b><br>제미나이·클로드 기초→응용<br><span style="color:#35e05a;">2시간 · 10만원</span></div>
+          <button onClick="{{ goClass }}" style="cursor:pointer;border:none;border-top:1px solid #35e05a;background:#0d0d78;color:#35e05a;font-family:inherit;font-size:17px;padding:10px;">신청하러 가기 ▶</button>
+        </div>
+        <div style="border:2px solid #f45cf4;background:#080860;display:flex;flex-direction:column;">
+          <div style="background:#f45cf4;color:#05055a;padding:6px 12px;font-size:18px;">② 강의안 구매</div>
+          <div style="padding:14px;flex:1;color:#cdd2ff;font-size:15px;"><b style="color:#fff;">카드뉴스 완전정복</b><br>PDF 84p + 프롬프트·템플릿<br><span style="color:#f45cf4;">39,000원~</span></div>
+          <button onClick="{{ goBuy }}" style="cursor:pointer;border:none;border-top:1px solid #f45cf4;background:#0d0d78;color:#f45cf4;font-family:inherit;font-size:17px;padding:10px;">상세 보기 ▶</button>
+        </div>
+        <div style="border:2px solid #f2e14a;background:#080860;display:flex;flex-direction:column;">
+          <div style="background:#f2e14a;color:#05055a;padding:6px 12px;font-size:18px;">★ 자료 모음집</div>
+          <div style="padding:14px;flex:1;color:#cdd2ff;font-size:15px;">그동안 공유한<br><b style="color:#fff;">노션 자료</b>를 한눈에<br><span style="color:#f2e14a;">검색 · 열람</span></div>
+          <button onClick="{{ goData }}" style="cursor:pointer;border:none;border-top:1px solid #f2e14a;background:#0d0d78;color:#f2e14a;font-family:inherit;font-size:17px;padding:10px;">자료실 입장 ▶</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  </sc-if>
+
+  <!-- ==================== PAGE 2 : CLASS ==================== -->
+  <sc-if value="{{ isClass }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="클래스 신청" style="padding:34px 0 44px;">
+    <div style="color:#35e05a;font-size:15px;letter-spacing:2px;">GO CLASS ─────────────────────────────</div>
+    <h1 style="margin:8px 0 4px;font-size:40px;color:#fff;text-shadow:3px 3px 0 #35e05a;">AI 활용법 1:1 과외</h1>
+    <div style="color:#aab0ff;font-size:18px;">콘텐츠 제작부터 AI 영상·자동화까지, 하고 싶은 걸 1:1로 알려드려요.</div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0;">
+      <div style="border:1px solid #35e05a;background:#12128f;padding:14px;text-align:center;"><div style="color:#35e05a;font-size:14px;">진행 시간</div><div style="font-size:30px;color:#fff;">2시간</div></div>
+      <div style="border:1px solid #35e05a;background:#12128f;padding:14px;text-align:center;"><div style="color:#35e05a;font-size:14px;">수강료</div><div style="font-size:30px;color:#fff;">10만원</div></div>
+      <div style="border:1px solid #35e05a;background:#12128f;padding:14px;text-align:center;"><div style="color:#35e05a;font-size:14px;">방식</div><div style="font-size:22px;color:#fff;margin-top:6px;">1:1 맞춤</div></div>
+    </div>
+
+    <div style="border:1px solid #2a2ab0;background:#080860;padding:16px 18px;margin-bottom:22px;color:#cdd2ff;font-size:16px;line-height:1.7;">
+      <b style="color:#f2e14a;">▷ 진행 순서</b><br>
+      ① 아래 신청서 작성 → ② <b style="color:#fff;">전화 또는 카톡 상담</b>으로 목표·수준 파악 → ③ 일정 확정 후 1:1 수업 진행<br>
+      <span style="color:#7e84e6;">문의 · 상담 : <a href="mailto:0530life@gmail.com">0530life@gmail.com</a></span>
+    </div>
+
+    <sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+    <div style="border:2px solid #35e05a;background:#080860;box-shadow:6px 6px 0 #05053a;">
+      <div style="background:#35e05a;color:#05055a;padding:8px 16px;font-size:19px;">◈ 클래스 신청서 작성</div>
+      <div style="padding:20px;">
+        <label style="display:block;color:#35e0e0;font-size:15px;margin-bottom:5px;">이름 <span style="color:#f45cf4;">*</span></label>
+        <input value="{{ fName }}" onInput="{{ onName }}" placeholder="홍길동" style="width:100%;background:#0a0a5a;border:1px solid #35e0e0;color:#fff;font-size:17px;padding:9px 11px;margin-bottom:16px;outline:none;" />
+
+        <label style="display:block;color:#35e0e0;font-size:15px;margin-bottom:5px;">연락처 (전화번호 또는 카톡 아이디) <span style="color:#f45cf4;">*</span></label>
+        <input value="{{ fContact }}" onInput="{{ onContact }}" placeholder="010-0000-0000  또는  kakao: id" style="width:100%;background:#0a0a5a;border:1px solid #35e0e0;color:#fff;font-size:17px;padding:9px 11px;margin-bottom:16px;outline:none;" />
+
+        <label style="display:block;color:#35e0e0;font-size:15px;margin-bottom:7px;">어떤 걸 하고 싶으세요?</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+          <sc-for list="{{ toolChips }}" as="chip" hint-placeholder-count="7">
+            <button onClick="{{ chip.pick }}" style="{{ chip.style }}">{{ chip.label }}</button>
+          </sc-for>
+        </div>
+
+        <label style="display:block;color:#35e0e0;font-size:15px;margin-bottom:5px;">구체적으로 어떤 걸 하고 싶거나, 막히는 부분이 무엇인가요?</label>
+        <textarea value="{{ fPurpose }}" onInput="{{ onPurpose }}" placeholder="예) AI 영상을 만들고 있는데 이런 문제점이 있어요 / 제 사업 소개 사이트를 직접 만들고 싶어요" rows="3" style="width:100%;background:#0a0a5a;border:1px solid #35e0e0;color:#fff;font-size:16px;padding:9px 11px;margin-bottom:8px;outline:none;resize:vertical;"></textarea>
+
+        <div style="color:#7e84e6;font-size:14px;margin-bottom:16px;">신청 내역은 안전하게 접수되며, 확인 후 남겨주신 연락처로 상담 연락을 드립니다.</div>
+        <button onClick="{{ submit }}" style="{{ submitStyle }}">◈ 신청 접수하기</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isSubmitted }}" hint-placeholder-val="{{ false }}">
+    <div style="border:2px solid #f2e14a;background:#080860;padding:26px;text-align:center;box-shadow:6px 6px 0 #05053a;">
+      <div style="color:#f2e14a;display:flex;justify-content:center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg></div>
+      <div style="font-size:28px;color:#f2e14a;margin:8px 0;">신청이 접수되었습니다!</div>
+      <div style="color:#cdd2ff;font-size:17px;line-height:1.7;"><b style="color:#fff;">{{ fName }}</b>님, 감사합니다.<br>남겨주신 연락처(<span style="color:#35e0e0;">{{ fContact }}</span>)로<br>확인 후 상담 연락을 드릴게요.</div>
+      <button onClick="{{ resetForm }}" style="cursor:pointer;margin-top:20px;border:1px solid #f2e14a;background:transparent;color:#f2e14a;font-family:inherit;font-size:16px;padding:9px 22px;">새 신청서 작성 ↺</button>
+    </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ==================== PAGE 3 : BUY ==================== -->
+  <sc-if value="{{ isBuy }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="강의안 구매" style="padding:34px 0 44px;">
+    <div style="color:#f45cf4;font-size:15px;letter-spacing:2px;">GO BUY ─────────────────────────────────</div>
+    <h1 style="margin:8px 0 4px;font-size:40px;color:#fff;text-shadow:3px 3px 0 #f45cf4;display:flex;align-items:center;gap:12px;"><svg viewBox="0 0 24 24" fill="none" stroke="#f45cf4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:38px;height:38px;flex:none;"><path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M8 6h8v4H8V6Z"/></svg>카드뉴스 완전정복</h1>
+    <div style="color:#aab0ff;font-size:18px;">코드 한 줄 몰라도, AI로 카드뉴스를 <b style="color:#fff;">자동으로</b> 뽑아내는 시스템.</div>
+
+    <div style="border-left:4px solid #f45cf4;padding:10px 0 10px 18px;margin:22px 0;font-size:18px;line-height:1.7;color:#eef0ff;">
+      "언제 한번 카드뉴스 올려야지" 하다가 몇 달째… <br>
+      디자인에 막혀 발행 못 한 원고, 한 장에 4시간씩 걸리는 하루.<br>
+      <b style="color:#f2e14a;">→ 이 강의안은 '툴 사용법'이 아니라 제작 자체를 자동화하는 법을 알려드려요.</b>
+    </div>
+
+    <div style="color:#35e0e0;font-size:20px;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;flex:none;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>이 책 한 권에 담긴 것 <span style="color:#7e84e6;font-size:15px;">(PDF, 총 84페이지)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:26px;">
+      <div style="border:1px solid #2a2ab0;background:#0d0d78;padding:14px;"><div style="color:#f45cf4;">Chapter 1. AI 도구 준비하기</div><div style="color:#aab0ff;font-size:15px;margin-top:4px;">제미나이·클로드 구독·세팅을 처음부터.</div></div>
+      <div style="border:1px solid #2a2ab0;background:#0d0d78;padding:14px;"><div style="color:#f45cf4;">Chapter 2. [실습] AI로 카드뉴스 만들기</div><div style="color:#aab0ff;font-size:15px;margin-top:4px;">디자인 분석→한 번에 뽑기→수정·저장 자동화.</div></div>
+      <div style="border:1px solid #2a2ab0;background:#0d0d78;padding:14px;"><div style="color:#f45cf4;">Chapter 3. [분석] 인스타그램 분석하기</div><div style="color:#aab0ff;font-size:15px;margin-top:4px;">구글 코랩으로 내 계정 데이터 직접 분석.</div></div>
+      <div style="border:1px solid #2a2ab0;background:#0d0d78;padding:14px;"><div style="color:#f45cf4;">부록. 더 잘 팔리는 카드뉴스의 비밀</div><div style="color:#aab0ff;font-size:15px;margin-top:4px;">후킹 3공식·CTA 설계·가치 교환 구조.</div></div>
+    </div>
+
+    <div style="color:#35e0e0;font-size:20px;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;flex:none;"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>함께 드리는 자료</div>
+    <div style="color:#cdd2ff;font-size:16px;line-height:1.9;margin-bottom:26px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em;vertical-align:-0.15em;margin-right:4px;"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>핵심 프롬프트 <b style="color:#fff;">8종</b> (복붙 즉시 사용) &nbsp;·&nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em;vertical-align:-0.15em;margin-right:4px;"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>AI 티 안 나는 디자인 템플릿 <b style="color:#fff;">3종</b> &nbsp;·&nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:1em;height:1em;vertical-align:-0.15em;margin-right:4px;"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>구글 코랩 인스타 분석 코드 파일 + 프롬프트
+    </div>
+
+    <div style="color:#f2e14a;font-size:20px;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;flex:none;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>사용자 후기</div>
+    <div style="display:grid;gap:10px;margin-bottom:28px;">
+      <div style="border:1px solid #2a2ab0;background:#080860;padding:12px 14px;color:#eef0ff;font-size:16px;"><span style="display:inline-flex;gap:2px;vertical-align:-2px;color:#f2e14a;margin-right:6px;"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>"코딩이 뭔지도 몰랐는데 따라했더니 카드뉴스가 뚝딱 나왔어요." <span style="color:#7e84e6;">— 40대 학원 운영</span></div>
+      <div style="border:1px solid #2a2ab0;background:#080860;padding:12px 14px;color:#eef0ff;font-size:16px;"><span style="display:inline-flex;gap:2px;vertical-align:-2px;color:#f2e14a;margin-right:6px;"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>"2026년 결제한 수업 중 가장 만족스러웠어요. AI를 아무것도 몰랐는데 정말 많이 배웠습니다!" <span style="color:#7e84e6;">— 1:1 피드백 수강생</span></div>
+      <div style="border:1px solid #2a2ab0;background:#080860;padding:12px 14px;color:#eef0ff;font-size:16px;"><span style="display:inline-flex;gap:2px;vertical-align:-2px;color:#f2e14a;margin-right:6px;"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:15px;height:15px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>"업무 효율이 확 달라졌어요. 덕분에 훨씬 수월해졌습니다." <span style="color:#7e84e6;">— 직장인</span></div>
+    </div>
+
+    <div style="color:#f2e14a;font-size:20px;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;flex:none;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>패키지 구성 및 가격</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="border:2px solid #35e0e0;background:#080860;padding:18px;">
+        <div style="color:#35e0e0;font-size:18px;">구성 1 — 기본 패키지</div>
+        <div style="font-size:34px;color:#fff;margin:6px 0;">39,000<span style="font-size:18px;">원</span></div>
+        <div style="color:#cdd2ff;font-size:15px;line-height:1.7;">PDF 강의안 84p · 핵심 프롬프트 7종<br>디자인 템플릿 3종 · 코랩 분석 코드+프롬프트</div>
+      </div>
+      <div style="border:2px solid #f2e14a;background:#080860;padding:18px;position:relative;">
+        <div style="position:absolute;top:-13px;right:12px;background:#f2e14a;color:#05055a;font-size:13px;padding:2px 8px;">1:1 케어</div>
+        <div style="color:#f2e14a;font-size:18px;">구성 2 — 1:1 피드백 패키지</div>
+        <div style="font-size:34px;color:#fff;margin:6px 0;">69,000<span style="font-size:18px;">원</span></div>
+        <div style="color:#cdd2ff;font-size:15px;line-height:1.7;">기본 패키지 전체 + 1:1 질문방 30일<br>카카오톡 채팅방 (오후 1시~10시)</div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;border:2px solid #f45cf4;background:#12128f;padding:22px;text-align:center;box-shadow:6px 6px 0 #05053a;">
+      <div style="color:#fff;font-size:20px;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;flex:none;"><path d="m9 9 5 12 1.8-5.2L21 14Z"/><path d="M7.2 2.2 8 5.1"/><path d="m5.1 8-2.9-.8"/><path d="M14 4.1 12 6"/><path d="m6 12-1.9 2"/></svg>지금 바로 구매하기</div>
+      <div style="color:#aab0ff;font-size:15px;margin-bottom:14px;">아래 버튼을 누르면 실제 판매 페이지로 이동합니다.</div>
+      <button onClick="{{ buy }}" style="cursor:pointer;border:none;background:#f45cf4;color:#05055a;font-family:inherit;font-size:24px;font-weight:bold;padding:14px 40px;box-shadow:4px 4px 0 #05053a;">▶ 구매 페이지로 이동 ◀</button>
+      <div style="margin-top:12px;"><a href="https://www.latpeed.com/products/k0XjI" target="_blank" rel="noopener">latpeed.com/products/k0XjI</a></div>
+    </div>
+    <div style="margin-top:20px;color:#7e84e6;font-size:15px;display:flex;align-items:center;gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex:none;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>준비물 : 클로드 유료 계정(Pro 이상) · 피그마 무료 계정 · 제미나이 무료 계정</div>
+  </div>
+  </sc-if>
+
+  <!-- ==================== PAGE 4 : DATA ==================== -->
+  <sc-if value="{{ isData }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="자료 모음집" style="padding:34px 0 44px;">
+    <div style="color:#f2e14a;font-size:15px;letter-spacing:2px;">GO DATA ────────────────────────────────</div>
+    <h1 style="margin:8px 0 4px;font-size:40px;color:#fff;text-shadow:3px 3px 0 #f2e14a;">★ 자료 모음집</h1>
+    <div style="color:#aab0ff;font-size:18px;">그동안 노션에 공유한 자료들. 검색하고, 블록을 눌러 바로 열람하세요.</div>
+
+    <div style="display:flex;align-items:center;gap:0;border:2px solid #f2e14a;background:#0a0a5a;margin:22px 0;">
+      <span style="background:#f2e14a;color:#05055a;padding:10px 14px;font-size:16px;">검색(L)</span>
+      <input value="{{ query }}" onInput="{{ onQuery }}" placeholder="자료 제목·태그로 검색 . . ." style="flex:1;background:transparent;border:none;color:#fff;font-size:17px;padding:10px 12px;outline:none;" />
+      <span style="color:#7e84e6;padding:0 14px;font-size:15px;">총 {{ resultCount }}건</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <sc-for list="{{ resources }}" as="res" hint-placeholder-count="4">
+        <div onClick="{{ res.open }}" style="cursor:pointer;border:2px solid {{ res.color }};background:#080860;display:flex;flex-direction:column;min-height:150px;box-shadow:5px 5px 0 #05053a;">
+          <div style="background:{{ res.color }};color:#05055a;padding:6px 12px;font-size:15px;display:flex;justify-content:space-between;"><span>{{ res.tag }}</span><span>NOTION</span></div>
+          <div style="padding:16px;flex:1;">
+            <div style="color:#fff;font-size:22px;line-height:1.3;">{{ res.title }}</div>
+            <div style="color:#aab0ff;font-size:15px;margin-top:8px;">{{ res.desc }}</div>
+          </div>
+          <div style="border-top:1px solid {{ res.color }};padding:8px 12px;font-size:15px;color:{{ res.color }};">▶ 눌러서 열람하기</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+      <div style="border:1px dashed #6a6fd0;padding:30px;text-align:center;color:#7e84e6;font-size:17px;margin-top:8px;">'{{ query }}' 에 해당하는 자료가 없습니다.</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  </div><!-- /column -->
+
+  <!-- ==================== RESOURCE VIEWER MODAL ==================== -->
+  <sc-if value="{{ hasOpenRes }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeRes }}" style="position:fixed;inset:0;z-index:80;background:rgba(2,2,30,.82);display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div onClick="{{ stop }}" style="width:100%;max-width:1000px;height:88vh;border:2px solid #f2e14a;background:#05053a;display:flex;flex-direction:column;box-shadow:8px 8px 0 rgba(0,0,0,.5);">
+      <div style="background:#f2e14a;color:#05055a;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;font-size:17px;">
+        <span>★ {{ openResTitle }}</span>
+        <span style="display:flex;gap:14px;align-items:center;">
+          <a href="{{ openResUrl }}" target="_blank" rel="noopener" style="color:#05055a;text-decoration:underline;font-size:15px;">새 탭에서 열기 ↗</a>
+          <button onClick="{{ closeRes }}" style="cursor:pointer;border:none;background:#05055a;color:#f2e14a;font-family:inherit;font-size:16px;padding:2px 12px;">✕ 닫기</button>
+        </span>
+      </div>
+      <div style="flex:1;position:relative;background:#fff;">
+        <iframe src="{{ openResEmbed }}" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#05055a;color:#aab0ff;font-size:14px;padding:7px 12px;text-align:center;border-top:1px solid #f2e14a;">노션 자료가 바로 안 보이면 우측 상단 <b style="color:#f2e14a;">'새 탭에서 열기'</b>를 눌러주세요.</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ==================== BOTTOM COMMAND BAR ==================== -->
+  <div style="position:fixed;bottom:0;left:0;right:0;z-index:70;background:#05055a;border-top:2px solid #35e0e0;color:#cdd2ff;font-size:14px;">
+    <div style="max-width:940px;margin:0 auto;padding:6px 16px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
+      <span style="color:#35e0e0;">메인(0)</span>
+      <span style="color:#35e05a;">신청(1)</span>
+      <span style="color:#f45cf4;">강의안(2)</span>
+      <span style="color:#f2e14a;">자료(3)</span>
+      <span style="color:#7e84e6;">상담(CALL) 0530life@gmail.com</span>
+      <span style="margin-left:auto;color:#7e84e6;">■ beucheo-net &nbsp;<span style="animation:blink 1s steps(1) infinite;">█</span></span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showScanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;레트로 효과&quot;},&quot;bootIntro&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;레트로 효과&quot;},&quot;sheetsUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://script.google.com/macros/s/AKfycbxqroJnTC0e7nvIyfOSV9MtBljOyi242Duov0iMVFybEbWRfcxYSdVf0KfxMUITWe4wmA/exec&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;신청서 연동&quot;,&quot;unit&quot;:&quot;&quot;}}">
+class Component extends DCLogic {
+  state = {
+    page: 'main',
+    form: { name: '', contact: '', tool: '', purpose: '' },
+    submitted: false,
+    query: '',
+    openRes: null,
+  };
+
+  RES = [
+    { id: 'r1', title: 'Fable 5로 반드시 해야할 4가지', desc: '상황별 가이드 + 복붙 프롬프트', tag: '프롬프트', color: '#35e0e0', url: 'https://vaulted-animantarx-83e.notion.site/Fable-5-4-39ee43a16720807ea554e2243cefb9fa', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a16720807ea554e2243cefb9fa' },
+    { id: 'r2', title: '나만의 나무위키 페이지 만들기', desc: '전체 튜토리얼', tag: '튜토리얼', color: '#35e05a', url: 'https://vaulted-animantarx-83e.notion.site/1-39ee43a16720804a8e4fddeba1e1fa49', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a16720804a8e4fddeba1e1fa49' },
+    { id: 'r3', title: '[가이드] 요즘 유행하는 AI 영상 제작하기', desc: 'AI 영상 제작 가이드', tag: '영상', color: '#f45cf4', url: 'https://vaulted-animantarx-83e.notion.site/AI-1-39ee43a16720809486a8f79b96ab45ab', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a16720809486a8f79b96ab45ab' },
+    { id: 'r4', title: '[가이드] AI로 영상 만드는 법', desc: 'AI 영상 제작 실전 가이드', tag: '영상', color: '#f2e14a', url: 'https://vaulted-animantarx-83e.notion.site/AI-1-39ee43a1672080fcb5d6e12353cd7d5e', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a1672080fcb5d6e12353cd7d5e' },
+  ];
+
+  rootRef = (el) => { this.root = el; };
+  starsRef = (el) => { this.stars = el; };
+  hueRef = (el) => { this.hue = el; };
+
+  componentDidMount() { this.initReveal(); this.initScroll(); }
+  componentDidUpdate(pp, ps) {
+    if (ps.page !== this.state.page) {
+      try { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e) {}
+      if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
+      requestAnimationFrame(() => { this.initReveal(); this.initScroll(); });
+    }
+  }
+  componentWillUnmount() { if (this._onScroll) window.removeEventListener('scroll', this._onScroll); if (this.io) this.io.disconnect(); }
+
+  initReveal() {
+    if (!this.root) return;
+    if (this.io) this.io.disconnect();
+    const els = this.root.querySelectorAll('[data-reveal]');
+    this.io = new IntersectionObserver((ents) => {
+      ents.forEach((e) => { if (e.isIntersecting) { e.target.style.opacity = 1; e.target.style.transform = 'none'; } });
+    }, { threshold: 0.12 });
+    els.forEach((el) => { el.style.opacity = 0; el.style.transform = 'translateY(48px)'; el.style.transition = 'opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1)'; this.io.observe(el); });
+  }
+
+  initScroll() {
+    const onScroll = () => {
+      const y = window.scrollY || window.pageYOffset || 0;
+      if (this.stars) this.stars.style.transform = 'translateY(' + (-y * 0.28) + 'px)';
+      if (this.hue) {
+        const h = Math.max(0, Math.min(1, y / 1400));
+        const r = Math.round(10 + (4 - 10) * h), g = Math.round(10 + (58 - 10) * h), b = Math.round(140 + (112 - 140) * h);
+        this.hue.style.background = 'linear-gradient(180deg, rgba(' + r + ',' + g + ',' + b + ',0) 0%, rgba(' + r + ',' + g + ',' + b + ',.92) 100%)';
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    this._onScroll = onScroll; onScroll();
+  }
+
+  go(page) {
+    this.setState({ page, submitted: false });
+    const top = () => { try { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e) {} };
+    top();
+    requestAnimationFrame(() => { top(); requestAnimationFrame(top); });
+    setTimeout(top, 60);
+  }
+
+  toolBtn(val) {
+    const on = this.state.form.tool === val;
+    return 'cursor:pointer;font-family:inherit;font-size:16px;padding:8px 16px;border:1px solid ' + (on ? '#35e05a' : '#2a2ab0') + ';background:' + (on ? '#35e05a' : '#0a0a5a') + ';color:' + (on ? '#05055a' : '#cdd2ff') + ';';
+  }
+  setTool(val) { this.setState((s) => ({ form: { ...s.form, tool: val } })); }
+  setField(k, v) { this.setState((s) => ({ form: { ...s.form, [k]: v } })); }
+
+  submit() {
+    const f = this.state.form;
+    if (!f.name.trim() || !f.contact.trim()) { alert('이름과 연락처를 입력해 주세요.'); return; }
+    const rec = { ...f, at: new Date().toISOString() };
+    try {
+      const key = 'beucheo_class_apps';
+      const arr = JSON.parse(localStorage.getItem(key) || '[]');
+      arr.push(rec);
+      localStorage.setItem(key, JSON.stringify(arr));
+    } catch (e) {}
+    const url = (this.props.sheetsUrl || '').trim();
+    if (url) {
+      try {
+        fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(rec) });
+      } catch (e) {}
+    }
+    this.setState({ submitted: true });
+  }
+  resetForm() { this.setState({ submitted: false, form: { name: '', contact: '', tool: '', purpose: '' } }); }
+
+  renderVals() {
+    const s = this.state;
+    const q = s.query.trim().toLowerCase();
+    const list = this.RES.filter((r) => !q || (r.title + ' ' + r.desc + ' ' + r.tag).toLowerCase().includes(q))
+      .map((r) => ({ ...r, open: () => this.setState({ openRes: r }) }));
+    const f = s.form;
+    const canSubmit = f.name.trim() && f.contact.trim();
+    const submitStyle = 'cursor:pointer;width:100%;border:none;font-family:inherit;font-size:20px;padding:13px;background:' + (canSubmit ? '#35e05a' : '#1c1c78') + ';color:' + (canSubmit ? '#05055a' : '#6a6fd0') + ';box-shadow:4px 4px 0 #05053a;';
+
+    return {
+      showScanlines: this.props.showScanlines ?? true,
+      bootIntro: this.props.bootIntro ?? true,
+      isMain: s.page === 'main', isClass: s.page === 'class', isBuy: s.page === 'buy', isData: s.page === 'data',
+      goMain: () => this.go('main'), goClass: () => this.go('class'), goBuy: () => this.go('buy'), goData: () => this.go('data'),
+      rootRef: this.rootRef, starsRef: this.starsRef, hueRef: this.hueRef,
+      // form
+      fName: f.name, fContact: f.contact, fPurpose: f.purpose,
+      onName: (e) => this.setField('name', e.target.value),
+      onContact: (e) => this.setField('contact', e.target.value),
+      onPurpose: (e) => this.setField('purpose', e.target.value),
+      toolChips: ['콘텐츠·릴스 제작','AI 영상 제작','웹사이트·앱 제작','업무 자동화','데이터 분석','AI·클로드 기초부터','아직 탐색 중'].map((v) => ({ label: v, style: this.toolBtn(v), pick: () => this.setTool(v) })),
+      submit: () => this.submit(), submitStyle, resetForm: () => this.resetForm(),
+      notSubmitted: !s.submitted, isSubmitted: s.submitted,
+      // buy
+      buy: () => { try { window.open('https://www.latpeed.com/products/k0XjI', '_blank', 'noopener'); } catch (e) {} },
+      // data
+      query: s.query, onQuery: (e) => this.setState({ query: e.target.value }),
+      resources: list, resultCount: list.length, noResults: list.length === 0,
+      hasOpenRes: !!s.openRes, openResUrl: s.openRes ? s.openRes.url : '', openResEmbed: s.openRes ? (s.openRes.embed || s.openRes.url) : '', openResTitle: s.openRes ? s.openRes.title : '',
+      closeRes: () => this.setState({ openRes: null }), stop: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
+</body>
+</html>
