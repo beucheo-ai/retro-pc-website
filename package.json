@@ -1,0 +1,7 @@
+{
+  "name": "beucheo-net",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "sed -i \"s|GAS_URL_PLACEHOLDER|$GAS_URL|g\" index.html"
+  }
+}
