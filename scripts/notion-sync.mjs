@@ -68,6 +68,40 @@ const PAGES = [
 
 const TAG_COLOR = { '가이드': '#35e0e0', '프롬프트': '#f2e14a', '영상': '#f45cf4', '이미지': '#35e05a', '튜토리얼': '#7e84e6', '기타': '#ff8a3d' };
 
+// 카테고리(대분류) — 자료 모음집 화면의 필터 탭에 쓰인다.
+// 새 자료를 추가하면 여기에도 id: '카테고리명'을 추가해줄 것. 안 넣으면 '기타'로 분류되고 실행 시 경고가 뜬다.
+const CATEGORIES = ['클로드 활용', '영상 제작', '이미지·디자인', '업무 자동화', '생산성 도구'];
+const CATEGORY_COLOR = { '클로드 활용': '#35e0e0', '영상 제작': '#f45cf4', '이미지·디자인': '#35e05a', '업무 자동화': '#ff8a3d', '생산성 도구': '#7e84e6', '기타': '#a7abdb' };
+const CATEGORY_MAP = {
+  '39be43a167208075a6d0ef48461e984f': '클로드 활용', // Fable 5로 반드시 해야할 4가지
+  '226e43a1672080778b3ddb6bbfac58f1': '이미지·디자인', // 제미나이로 PPT 만들기
+  '2e7e43a1672080f1b44be3b514276788': '영상 제작', // 제미나이로 영상 만들기
+  '305e43a1672080269a40fb20af363d90': '이미지·디자인', // 배송 안내 이미지 제작하기
+  '306e43a1672080299256c5a7960d7cee': '이미지·디자인', // 식료품 패키징 이미지 만들기
+  '310e43a16720805c9287d6bbcfe5094e': '이미지·디자인', // 나노 바나나 2 이미지 프롬프트
+  '317e43a1672080c08018e7a5e419da38': '이미지·디자인', // 봄동 비빔밥 젤리 만들기
+  '322e43a167208012bf1af16552155063': '이미지·디자인', // 나만의 이모티콘 제작 가이드
+  '329e43a16720809ea0bfe154aa1e21a7': '이미지·디자인', // 나노 바나나 2 실무 활용 프롬프트
+  '32ee43a16720807fb3f5ecbca5963910': '생산성 도구', // 노트북LM 가이드 및 상황별 프롬프트
+  '331e43a16720803ea46ee0f1e0f6dcde': '이미지·디자인', // PPT 아이콘 만들기
+  '34ae43a1672080e58e79dbd17833278a': '업무 자동화', // 클로드 자동화: 뉴스·주식 정보 매일 받는 법
+  '351e43a1672080f49660c148a220b34f': '클로드 활용', // 클로드 커넥터로 내 업무자동화하는 방법
+  '356e43a1672080c29c07ff5ff2a5e3db': '클로드 활용', // 클로드 가이드
+  '370e43a16720805daa28f864dee55586': '클로드 활용', // 반복 업무 시간을 단축시키는 AI 활용법
+  '373e43a1672080debe57e3a0004eb1e6': '클로드 활용', // 클로드 모델 선택 가이드
+  '373e43a1672080fcabbfc520a4ffcbc5': '클로드 활용', // 클로드 제대로 쓰는 법
+  '378e43a16720801ebc27ca5ebafd5133': '영상 제작', // 카드뉴스를 MP4 영상으로 변환하는 법
+  '379e43a1672080cfabbee8621ca42055': '업무 자동화', // 유튜브 영상 → 카드뉴스 자동화 프로그램 제작
+  '37de43a16720807fb552e7ed76a0dab1': '업무 자동화', // 주식 정보 카톡으로 받아보기
+  '37fe43a167208010ad61d1de2c79fb3a': '클로드 활용', // 내 업무 전용 AI 팀 만들기 - AI 오케스트레이션
+  '381e43a167208001b516fe4a5769ddfb': '클로드 활용', // 옵시디언 + 클로드 셋업 가이드
+  '385e43a1672080aa829fe3b13c0f2395': '영상 제작', // AI로 영상 만드는 법
+  '38ee43a1672080ec9283c07121a1a2d2': '클로드 활용', // 1인 크리에이터 필수, 클로드 코드 확장기능 3가지
+  '392e43a16720806c96bdccf7f4dba195': '클로드 활용', // 클로드 무료 이용권 상세 가이드
+  '397e43a16720802e98bad0971f7b8712': '영상 제작', // 요즘 유행하는 AI 영상 제작하기
+  '399e43a1672080dab2ede7a609c76206': '생산성 도구', // 나만의 나무위키 페이지 만들기
+};
+
 function normalizeId(raw) {
   const m = raw.match(/([0-9a-fA-F]{32})(?:[?#]|$)/) || raw.match(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/);
   if (!m) throw new Error('노션 페이지 ID를 찾을 수 없음: ' + raw);
@@ -334,7 +368,9 @@ async function processPage(rawIdOrUrl) {
   const rawTitle = titleProp.map((t) => t.plain_text).join('').trim() || '(제목 없음)';
   const { bracket, title, desc: descFromTitle } = parseTitle(rawTitle);
   const tag = pickTag(rawTitle, bracket);
-  const color = TAG_COLOR[tag] || TAG_COLOR['기타'];
+  const category = CATEGORY_MAP[flatId] || '기타';
+  if (!CATEGORY_MAP[flatId]) console.log(`  ⚠ 카테고리 미지정 → '기타'로 분류됨. CATEGORY_MAP에 추가해주세요: ${flatId}`);
+  const color = CATEGORY_COLOR[category];
 
   const ctx = { pageId: flatId, imgIndex: 0, firstText: null };
   const topBlocks = await fetchAllChildren(id);
@@ -349,6 +385,7 @@ async function processPage(rawIdOrUrl) {
     title,
     desc,
     tag,
+    category,
     color,
     url: page.public_url || null,
   };
@@ -361,12 +398,14 @@ function toResJs(entries) {
       `title: ${JSON.stringify(e.title)}`,
       `desc: ${JSON.stringify(e.desc)}`,
       `tag: ${JSON.stringify(e.tag)}`,
+      `category: ${JSON.stringify(e.category)}`,
       `color: ${JSON.stringify(e.color)}`,
     ];
     if (e.url) parts.push(`url: ${JSON.stringify(e.url)}`);
     return `    { ${parts.join(', ')} },`;
   });
-  return `  // === NOTION_RESOURCES_START (scripts/notion-sync.mjs 로 자동 생성됨 — 직접 수정해도 다음 실행 시 덮어써짐) ===\n  RES = [\n${lines.join('\n')}\n  ];\n  // === NOTION_RESOURCES_END ===`;
+  const catLines = CATEGORIES.map((c) => `    { name: ${JSON.stringify(c)}, color: ${JSON.stringify(CATEGORY_COLOR[c])} },`);
+  return `  // === NOTION_RESOURCES_START (scripts/notion-sync.mjs 로 자동 생성됨 — 직접 수정해도 다음 실행 시 덮어써짐) ===\n  RES_CATEGORIES = [\n${catLines.join('\n')}\n  ];\n  RES = [\n${lines.join('\n')}\n  ];\n  // === NOTION_RESOURCES_END ===`;
 }
 
 async function main() {
