@@ -22,6 +22,37 @@ a:hover{color:#fff;background:#f2e14a33;}
 @keyframes tick{0%{transform:translateY(0);}100%{transform:translateY(-100%);}}
 input,textarea{font-family:'Morris','Courier New',monospace;}
 ::-webkit-input-placeholder{color:#6a6fd0;}
+.res-content{padding:20px 22px 44px;color:#e8eaff;font-size:16.5px;line-height:1.85;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Pretendard',sans-serif;-webkit-font-smoothing:antialiased;font-smoothing:antialiased;image-rendering:auto;letter-spacing:normal;}
+.res-content h1,.res-content h2,.res-content h3{color:#fff;font-family:inherit;font-weight:800;margin:26px 0 10px;letter-spacing:-.2px;}
+.res-content h1{font-size:24px;border-bottom:2px solid #35e0e0;padding-bottom:8px;}
+.res-content h2{font-size:20px;color:#5cf0f0;}
+.res-content h3{font-size:17.5px;color:#f2e14a;}
+.res-content p{margin:11px 0;}
+.res-content ul,.res-content ol{margin:8px 0;padding-left:24px;}
+.res-content li{margin:5px 0;}
+.res-content li.todo{list-style:none;margin-left:-24px;padding-left:0;}
+.res-content details.nb-toggle{border:1px solid #3f44a8;background:#0a0a5a;margin:14px 0;padding:0 14px;border-radius:2px;}
+.res-content details.nb-toggle>summary{cursor:pointer;color:#ff8ce8;font-weight:700;padding:11px 0;list-style:none;}
+.res-content details.nb-toggle>summary::-webkit-details-marker{display:none;}
+.res-content details.nb-toggle>summary::before{content:'▸ ';display:inline-block;}
+.res-content details.nb-toggle[open]>summary::before{content:'▾ ';}
+.res-content details.nb-toggle[open]>summary{border-bottom:1px dashed #3f44a8;margin-bottom:10px;}
+.res-content details.nb-toggle .toggle-body{padding:0 0 12px 2px;}
+.res-content blockquote{border-left:3px solid #f2e14a;background:#0a0a5a;margin:12px 0;padding:10px 14px;color:#d7daff;}
+.res-content .callout{display:flex;gap:10px;border:1px solid #35e0e0;background:#0a0a5a;padding:13px 14px;margin:14px 0;border-radius:2px;}
+.res-content code{background:#0a0a5a;color:#f2e14a;padding:2px 6px;font-size:.88em;border-radius:3px;font-family:'SF Mono','Menlo',monospace;}
+.res-content pre{position:relative;background:#03031f;border:1px solid #35e0e0;padding:16px;margin:14px 0;overflow-x:auto;border-radius:2px;}
+.res-content pre code{background:none;color:#9dffef;padding:0;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.6;}
+.res-content pre .copy-btn{position:absolute;top:8px;right:8px;cursor:pointer;border:1px solid #35e0e0;background:#05055a;color:#35e0e0;font-family:inherit;font-size:12px;padding:3px 9px;border-radius:2px;}
+.res-content pre .copy-btn.copied{background:#35e05a;color:#05055a;border-color:#35e05a;}
+.res-content hr{border:none;border-top:1px dashed #4a4fc0;margin:22px 0;}
+.res-content img{max-width:100%;height:auto;border:1px solid #35e0e0;margin:10px 0;border-radius:2px;}
+.res-content table{border-collapse:collapse;width:100%;margin:14px 0;font-size:15px;}
+.res-content th,.res-content td{border:1px solid #4a4fc0;padding:7px 10px;text-align:left;}
+.res-content th{background:#0a0a5a;color:#f2e14a;}
+.res-content a{text-decoration:underline;text-underline-offset:2px;}
+.res-content strong{color:#fff;}
+.res-content .loading{color:#7e84e6;padding:40px 0;text-align:center;font-size:16px;font-family:'Morris','Courier New',monospace;}
 </style>
 </helmet>
 <div ref="{{ rootRef }}" style="position:relative;min-height:100vh;background:#0a0a8c;color:#eef0ff;font-size:17px;line-height:1.55;padding-bottom:64px;">
@@ -308,13 +339,14 @@ CONNECT 33600 / NO CARRIER 방지 프로토콜 OK
       <div style="background:#f2e14a;color:#05055a;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;font-size:17px;">
         <span>★ {{ openResTitle }}</span>
         <span style="display:flex;gap:14px;align-items:center;">
+          <sc-if value="{{ hasOpenResUrl }}" hint-placeholder-val="{{ false }}">
           <a href="{{ openResUrl }}" target="_blank" rel="noopener" style="color:#05055a;text-decoration:underline;font-size:15px;">새 탭에서 열기 ↗</a>
+          </sc-if>
           <button onClick="{{ closeRes }}" style="cursor:pointer;border:none;background:#05055a;color:#f2e14a;font-family:inherit;font-size:16px;padding:2px 12px;">✕ 닫기</button>
         </span>
       </div>
-      <div style="flex:1;position:relative;background:#fff;">
-        <iframe src="{{ openResEmbed }}" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
-        <div style="position:absolute;left:0;right:0;bottom:0;background:#05055a;color:#aab0ff;font-size:14px;padding:7px 12px;text-align:center;border-top:1px solid #f2e14a;">노션 자료가 바로 안 보이면 우측 상단 <b style="color:#f2e14a;">'새 탭에서 열기'</b>를 눌러주세요.</div>
+      <div style="flex:1;position:relative;background:#05053a;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+        <div ref="{{ resContentRef }}" class="res-content"><div class="loading">불러오는 중 . . .</div></div>
       </div>
     </div>
   </div>
@@ -343,16 +375,65 @@ class Component extends DCLogic {
     openRes: null,
   };
 
+  // === NOTION_RESOURCES_START (scripts/notion-sync.mjs 로 자동 생성됨 — 직접 수정해도 다음 실행 시 덮어써짐) ===
   RES = [
-    { id: 'r1', title: 'Fable 5로 반드시 해야할 4가지', desc: '상황별 가이드 + 복붙 프롬프트', tag: '프롬프트', color: '#35e0e0', url: 'https://vaulted-animantarx-83e.notion.site/Fable-5-4-39ee43a16720807ea554e2243cefb9fa', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a16720807ea554e2243cefb9fa' },
-    { id: 'r2', title: '나만의 나무위키 페이지 만들기', desc: '전체 튜토리얼', tag: '튜토리얼', color: '#35e05a', url: 'https://vaulted-animantarx-83e.notion.site/1-39ee43a16720804a8e4fddeba1e1fa49', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a16720804a8e4fddeba1e1fa49' },
-    { id: 'r3', title: '[가이드] 요즘 유행하는 AI 영상 제작하기', desc: 'AI 영상 제작 가이드', tag: '영상', color: '#f45cf4', url: 'https://vaulted-animantarx-83e.notion.site/AI-1-39ee43a16720809486a8f79b96ab45ab', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a16720809486a8f79b96ab45ab' },
-    { id: 'r4', title: '[가이드] AI로 영상 만드는 법', desc: 'AI 영상 제작 실전 가이드', tag: '영상', color: '#f2e14a', url: 'https://vaulted-animantarx-83e.notion.site/AI-1-39ee43a1672080fcb5d6e12353cd7d5e', embed: 'https://vaulted-animantarx-83e.notion.site/ebd/39ee43a1672080fcb5d6e12353cd7d5e' },
+    { id: "39be43a167208075a6d0ef48461e984f", title: "Fable 5로 반드시 해야할 4가지", desc: "상황별 가이드 + 복붙 프롬프트", tag: "프롬프트", color: "#f2e14a" },
+    { id: "226e43a1672080778b3ddb6bbfac58f1", title: "제미나이로 PPT 만들기", desc: "", tag: "가이드", color: "#35e0e0" },
+    { id: "2e7e43a1672080f1b44be3b514276788", title: "제미나이로 영상 만들기", desc: "Gemini(이미지 생성/프롬프트 고도화)와 Flow(영상 생성)를 연계하여 AI 영상을 만드는 방법입니다.", tag: "영상", color: "#f45cf4" },
+    { id: "305e43a1672080269a40fb20af363d90", title: "배송 안내 이미지 제작하기", desc: "", tag: "이미지", color: "#35e05a" },
+    { id: "306e43a1672080299256c5a7960d7cee", title: "식료품 패키징 이미지 만들기", desc: "(1) 랩 포장 프롬프트", tag: "이미지", color: "#35e05a" },
+    { id: "310e43a16720805c9287d6bbcfe5094e", title: "나노 바나나 2 이미지 프롬프트", desc: "어떤 컨셉에서도 고퀄리티 결과물을 보장하는 '치트키' 문구들입니다.", tag: "이미지", color: "#35e05a" },
+    { id: "317e43a1672080c08018e7a5e419da38", title: "봄동 비빔밥 젤리 만들기", desc: "", tag: "프롬프트", color: "#f2e14a" },
+    { id: "322e43a167208012bf1af16552155063", title: "나만의 이모티콘 제작 가이드", desc: "", tag: "가이드", color: "#35e0e0" },
+    { id: "329e43a16720809ea0bfe154aa1e21a7", title: "나노 바나나 2 실무 활용 프롬프트", desc: "", tag: "프롬프트", color: "#f2e14a" },
+    { id: "32ee43a16720807fb3f5ecbca5963910", title: "노트북LM 가이드 및 상황별 프롬프트", desc: "노트북LM은 총 3개의 영역으로 구성되어 있습니다.", tag: "프롬프트", color: "#f2e14a" },
+    { id: "331e43a16720803ea46ee0f1e0f6dcde", title: "PPT 아이콘 만들기", desc: "", tag: "프롬프트", color: "#f2e14a" },
+    { id: "34ae43a1672080e58e79dbd17833278a", title: "클로드 자동화: 뉴스·주식 정보 매일 받는 법", desc: "클로드가 외부의 정보를 가져오고(Exa), 메시지를 보낼 수 있도록(Slack) 통로를 열어줍니다.", tag: "프롬프트", color: "#f2e14a" },
+    { id: "351e43a1672080f49660c148a220b34f", title: "클로드 커넥터로 내 업무자동화하는 방법", desc: "커넥터는 클로드가 외부 서비스나 앱과 연결해서 데이터를 가져오거나 작업을 수행할 수 있게 해주는 MCP(Mo", tag: "가이드", color: "#35e0e0" },
+    { id: "356e43a1672080c29c07ff5ff2a5e3db", title: "클로드 가이드", desc: "AI가 처음인 당신을 위해", tag: "가이드", color: "#35e0e0" },
+    { id: "370e43a16720805daa28f864dee55586", title: "반복 업무 시간을 단축시키는 AI 활용법 ⚡️", desc: "AI에게 벤치마킹할 결과물(텍스트, 이미지, 영상, 보고서 등)을 채팅창에 업로드해서 학습시킨다.", tag: "가이드", color: "#35e0e0" },
+    { id: "373e43a1672080debe57e3a0004eb1e6", title: "클로드 모델 선택 가이드", desc: "어떤 모델인가요?", tag: "가이드", color: "#35e0e0" },
+    { id: "373e43a1672080fcabbfc520a4ffcbc5", title: "클로드 제대로 쓰는 법", desc: "일회성 작업, 빠른 질문, 단발성 요청에 사용", tag: "가이드", color: "#35e0e0" },
+    { id: "378e43a16720801ebc27ca5ebafd5133", title: "카드뉴스를 MP4 영상으로 변환하는 법", desc: "준비물 : VS Code, 클로드 코드", tag: "영상", color: "#f45cf4" },
+    { id: "379e43a1672080cfabbee8621ca42055", title: "유튜브 영상 → 카드뉴스 자동화 프로그램 제작", desc: "3.10 이상이면 OK. 낮으면 python.org에서 최신 버전 설치.", tag: "영상", color: "#f45cf4" },
+    { id: "37de43a16720807fb552e7ed76a0dab1", title: "주식 정보 카톡으로 받아보기", desc: "Claude + PlayMCP(카카오톡 나챗방)을 연동해서, 관심 종목의 최신 뉴스와 선행 리스크 신호를 매", tag: "가이드", color: "#35e0e0" },
+    { id: "37fe43a167208010ad61d1de2c79fb3a", title: "내 업무 전용 AI 팀 만들기 - AI 오케스트레이션", desc: "많은 직장인과 크리에이터들이 \"블로그 글 써줘\", \"이 기능 구현하는 코드 짜줘\"와 같이 단순한 단발성 질문", tag: "가이드", color: "#35e0e0" },
+    { id: "381e43a167208001b516fe4a5769ddfb", title: "옵시디언 + 클로드 셋업 가이드", desc: "참고 : 61초 만에 Obsidian과 Claude 활용하는 법 (Greg Isenberg)", tag: "가이드", color: "#35e0e0" },
+    { id: "385e43a1672080aa829fe3b13c0f2395", title: "AI로 영상 만드는 법", desc: "영상 만드는 도구는 하이퍼프레임(HyperFrames) 이라는 무료 오픈소스예요. 직접 설치 명령어 칠 필요", tag: "영상", color: "#f45cf4" },
+    { id: "38ee43a1672080ec9283c07121a1a2d2", title: "1인 크리에이터 필수, 클로드 코드 확장기능 3가지", desc: "⚠️ 본 가이드는 VS Code 환경에서 클로드 코드(유료 계정)를 사용하는 기준(방법)으로 작성되었습니다.", tag: "가이드", color: "#35e0e0" },
+    { id: "392e43a16720806c96bdccf7f4dba195", title: "클로드 무료 이용권 상세 가이드", desc: "가장 먼저 이거부터 확인하세요. 조건은 딱 하나예요.", tag: "가이드", color: "#35e0e0" },
+    { id: "397e43a16720802e98bad0971f7b8712", title: "요즘 유행하는 AI 영상 제작하기", desc: "🧰 준비물 (AI 도구)", tag: "영상", color: "#f45cf4" },
+    { id: "399e43a1672080dab2ede7a609c76206", title: "나만의 나무위키 페이지 만들기", desc: "전체 튜토리얼", tag: "튜토리얼", color: "#7e84e6" },
   ];
+  // === NOTION_RESOURCES_END ===
 
   rootRef = (el) => { this.root = el; };
   starsRef = (el) => { this.stars = el; };
   hueRef = (el) => { this.hue = el; };
+  resContentRef = (el) => {
+    this.resContentEl = el;
+    if (!el) return;
+    el.addEventListener('click', (e) => {
+      const btn = e.target.closest('.copy-btn');
+      if (!btn) return;
+      const pre = btn.closest('pre');
+      const code = pre ? pre.querySelector('code') : null;
+      const text = code ? code.textContent : '';
+      Promise.resolve(navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
+        .then(() => { btn.textContent = '복사됨 ✓'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1500); })
+        .catch(() => {});
+    });
+    this.loadResContent();
+  };
+
+  loadResContent() {
+    const res = this.state.openRes;
+    if (!res || !this.resContentEl) return;
+    fetch('resources/' + res.id + '.html')
+      .then((r) => { if (!r.ok) throw new Error('missing'); return r.text(); })
+      .then((html) => { if (this.resContentEl && this.state.openRes === res) this.resContentEl.innerHTML = html; })
+      .catch(() => { if (this.resContentEl && this.state.openRes === res) this.resContentEl.innerHTML = '<div class="loading">자료를 불러오지 못했어요. 잠시 후 다시 시도해주세요.</div>'; });
+  }
 
   componentDidMount() { this.initReveal(); this.initScroll(); }
   componentDidUpdate(pp, ps) {
@@ -451,7 +532,8 @@ class Component extends DCLogic {
       // data
       query: s.query, onQuery: (e) => this.setState({ query: e.target.value }),
       resources: list, resultCount: list.length, noResults: list.length === 0,
-      hasOpenRes: !!s.openRes, openResUrl: s.openRes ? s.openRes.url : '', openResEmbed: s.openRes ? (s.openRes.embed || s.openRes.url) : '', openResTitle: s.openRes ? s.openRes.title : '',
+      hasOpenRes: !!s.openRes, openResUrl: s.openRes ? s.openRes.url : '', hasOpenResUrl: !!(s.openRes && s.openRes.url), openResTitle: s.openRes ? s.openRes.title : '',
+      resContentRef: this.resContentRef,
       closeRes: () => this.setState({ openRes: null }), stop: (e) => e.stopPropagation(),
     };
   }
